@@ -1,0 +1,27 @@
+SOURCE: Reddit r/utdallas - "Rate my schedule, I just transferred to UTD and..."
+URL: https://www.reddit.com/r/utdallas/comments/1ty80gg/rate_my_schedule_i_just_transferred_to_utd_and/
+MAJOR: Computer Science
+CLASSIFICATION: Transfer student
+SEMESTER: Fall 2026
+
+SCHEDULE:
+- MATH 2418 Linear Algebra - Prof. Adrian Calin Murza - TR 10:00 AM - 11:15 AM
+- MATH 2418 Linear Algebra (Problem Section) - Wednesday 8:00 AM - 9:50 AM
+- CS 2336 Computer Science II - Prof. Erik Andrew Peterson - MW 10:00 AM - 11:15 AM
+- CS 2305 Discrete Mathematics I - Prof. Benjamin A Raichel - MW 11:30 AM - 12:45 PM
+- ECS 2390 Professional and Technical Communication - Online
+Total: 13 credit hours
+
+POST:
+None [mentioned in the title]
+
+COMMENTS:
+- [TemocOrionGalaxy] Why do you only have 10 credit hours? You’re technically not a full-time student with that few credit hours.
+  - [OP] I got ECS 2390 online.
+
+- [TechnoBeast_12] We’re in the same math class.
+
+- [Conscious_Baker2207] During the problem section the TA will likely go over content y’all learned over the past week and then administer a quiz at the end of the section (unless there’s an exam that week). There’s not a very good way to pick which TA you’ll have, and some TAs are definitely better than others, so it’s a tough situation but not much you can do.
+  - [OP] Is attendance for the problem section mandatory? If I miss a section, would it affect my grade, especially since quizzes may be given there?
+    - [Conscious_Baker2207] I’m pretty sure attendance in the problem section is part of the grade for the class as a whole. Missing one section shouldn’t be too bad since you get one dropped quiz grade, but missing multiple sections might hurt.
+    - [Desperate_Link_5916] Your attendance is a grade but if you have a valid reason you can email the TA and professor to take the quiz some time later.

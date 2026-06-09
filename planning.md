@@ -23,7 +23,7 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 |---|--------|-------------|-----------------|
 | 1 | Reddit | A science major rushing to lock in classes last-minute and asking if it's doable | https://www.reddit.com/r/utdallas/comments/185osys/rate_my_schedule/ |
 | 2 | Reddit | A CS major asking which professors to take for sophomore-level courses | https://www.reddit.com/r/utdallas/comments/1smfx3i/rate_my_schedule/ |
-| 3 | Reddit | A freshman switching from communications to business, checking if their plan still fits | https://www.reddit.com/r/utdallas/comments/1ty55ls/rate_my_schedule_pleaseee/ |
+| 3 | Reddit | A freshman switching from communications to business marketing, checking if their plan still fits | https://www.reddit.com/r/utdallas/comments/1ty55ls/rate_my_schedule_pleaseee/ |
 | 4 | Reddit | A new CS transfer asking how their first UTD semester looks | https://www.reddit.com/r/utdallas/comments/1ty80gg/rate_my_schedule_i_just_transferred_to_utd_and/ |
 | 5 | Reddit | A neuroscience honors student asking if the extra workload is manageable | https://www.reddit.com/r/utdallas/comments/1tpoc5c/rate_my_schedule/ |
 | 6 | Reddit | An IT major stacking 3000- and 4000-level courses, asking if it's too much | https://www.reddit.com/r/utdallas/comments/1sh476s/rate_my_schedule/ |
@@ -43,7 +43,7 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 
 **Chunk size:** ~600 characters (roughly 150 tokens)
 
-**Overlap:** ~100 characters (about one sentence)
+**Overlap:** ~50 characters 
 
 **Reasoning:** My documents are short Reddit threads — a student posts their major and class list, and other students comment back. Each comment is usually one self-contained opinion, so I'm keeping chunks small so that one chunk holds roughly one person's advice instead of mashing five people together. 600 characters also stays under the 256-token limit of my embedding model so nothing gets cut off. The small overlap just keeps advice from getting split in half at the edge of a chunk. Before chunking I clean out the Reddit junk (vote counts, "Reply", timestamps) so the embeddings focus on what students actually said.
 
@@ -111,7 +111,7 @@ If cost wasn't a problem and this was a real tool, I'd think about a bigger mode
  read .txt    clean Reddit      all-MiniLM-L6-v2   embed question,   send chunks +
  files from   junk, split       embeds chunks,     pull top-5        question to Groq,
  documents/   into ~600-char    stored in          closest chunks    show answer +
- (Python)     chunks, 100       ChromaDB           from ChromaDB     sources in a
+ (Python)     chunks, 50        ChromaDB           from ChromaDB     sources in a
               overlap                                                 simple UI
 ```
 

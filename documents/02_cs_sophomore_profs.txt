@@ -1,0 +1,39 @@
+SOURCE: Reddit r/utdallas - "Rate my Schedule"
+URL: https://www.reddit.com/r/utdallas/comments/1smfx3i/rate_my_schedule/
+MAJOR: Computer Science
+CLASSIFICATION: Underclassman
+SEMESTER: Fall 2026
+
+SCHEDULE:
+- GOVT 2306 State and Local Government - Prof. Euel W Elliott - MWF 9:00 AM - 9:50 AM
+- RHET 1302 Rhetoric - Prof. Meghana Navnath Satpute - MW 10:00 AM - 11:15 AM
+- MATH 2418 Linear Algebra - Prof. Adrian Calin Murza - MW 10:00 AM - 11:15 AM / F 10:00 AM - 11:50 AM (Exam/Problem Section)
+- CS 2336 Computer Science II - Prof. Meghana Navnath Satpute - TR 11:30 AM - 12:45 PM
+- CS 2340 Computer Architecture - Prof. Nhut Nguyen - TR 1:00 PM - 2:15 PM
+Total: 16 credit hours
+
+POST:
+Can you give feedback on the profs as well. Also I want to take another core class any tip on that. I’ve alr taken LIT1301 and GOVT2305.
+
+COMMENTS:
+- [Alert-Ad7097] Peak linear algebra prof, 2336 prof is good (easy A), everyday class is awful
+
+- [Substantial_Rip_2973] That CS2340 is going to be tough
+  - [OP] who do you reccomend alice or nhut?
+  - [Substantial_Rip_2973] Alice fs, you will learn the stuff and A is guaranteed if you put in the work.
+
+- [ExchangeLife578] it’s not the worst thing in the world. i would pack snacks on tuesdays and thursdays
+
+- [TemocOrionGalaxy] 8/10 I don’t know how you’re gonna find time for lunch on tuesdays and thurdays and Nhut Nguyen is a notoriously bad professor other than that it’s pretty good
+
+- [Ready_Bake_3311] Have heard some really bad things about Nguyen
+  - [OP] who is worse Alice or nhut?
+  - [Ready_Bake_3311] I’m taking Wang. I’ve heard some mixed things on her a lot of them were good and a fair amount of bad. A lot of people just said not to take comp arch at UTD. Then again, you never know if people just complain bc they got a bad grade.
+
+- [8nekket] alice wang was a very structured class, but I think its just in the nature of comp arch to be difficult overall, pretty good class and her slides worked well for me, at least
+
+- [Active_Poet_887] govt with elliot is an easy A
+
+- [Proof_Community4610] Gov Class has a goated professor free A from him
+
+- [Famous-Director7860] I’ve taken nhut so far so good just the accent is kinda hard to follow and as long as you didn’t take Rosemond Cates for RHET your fine

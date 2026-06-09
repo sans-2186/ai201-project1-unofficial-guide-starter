@@ -1,0 +1,32 @@
+SOURCE: Reddit r/utdallas - "Rate my Schedule"
+URL: https://www.reddit.com/r/utdallas/comments/1otwy7f/rate_my_schedule/
+MAJOR: Computer Science
+CLASSIFICATION: Underclassmen
+SEMESTER: Spring 2026
+
+SCHEDULE:
+- PHYS 2325 Mechanics - Prof. Lloyd Lumata - MW 10:00 AM - 11:15 AM
+- MATH 2414 Calculus II - Prof. Nasrin Sultana - TR 10:00 AM - 11:45 AM
+- CS 1337 Computer Science I - Prof. Shyam S Karrah - MW 1:00 PM - 2:15 PM
+- CS 2305 Discrete Mathematics I - Prof. Benjamin A Raichel - MW 2:30 PM - 3:45 PM
+- PHYS 2125 Physics Laboratory I - TA: Amena Khan / Prof. Roger Kadala - F 11:00 AM - 12:50 PM
+Total: 14 credit hours
+
+POST:
+Spring semester CS major
+
+COMMENTS:
+- [Alert-Ad7097] School everyday is always awful.
+
+- [MrTechnoligist] Lumata is a good professor. For his class, you just have to study the slides. The exam questions are mostly from there. They might just be slightly different so you can't just memorize the answer. Learn how to solve the questions on the slides.
+
+- [Independent-Whole-38] Too many gaps in between classes.
+  - [Krysidian2] Not really. Those gaps are happening around lunchtime.
+
+- [big-boi-B-123] Sultana is one of the best for differential calculus. She gives all the questions for every quiz and exam before the test so studying is easy. She is just not the most clear speaking wise, but if you ask questions it’s light.
+
+- [HanekawasTiddies] That looks like hell. The big gaps between classes also seem like a good idea, but in reality they suck and are usually very unproductive.
+
+- [Unhappy_Anteater_141] Amena Khan is goated as a physics lab TA. Shyam Karrah is alright, homework is easy, but exams are on paper so you need to write code on paper, which can be a little challenging. CS 2305 will be tough but curves are nice.
+
+- [OkIsland5453] For a freshman CS/SE major its fine. You are definitely not gonna have the most fun time, but its better to load up in your first year so that way when you start taking the harder classes you can actually make a schedule that doesn't leave you as swamped with classes all day like this one. Try to lessen the gaps though, unless you are a very productive person you are usually gonna waste all your time during them. Also try to take some classes at Collin over the summer if you really wanna make your life easier. It'll make your schedule a lot more manageable since you can justify taking the minimum credit hours needed to be full time (12 hours). For example, economics, government, history, or even CS classes for the first 2-3 years can be taken and their credit be transferred back to UTD. Just discuss those with your advisor first because classes with labs sometimes can't transfer. Note that transferred credits will not affect your GPA.
