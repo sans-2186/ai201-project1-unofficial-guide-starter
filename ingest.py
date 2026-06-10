@@ -159,6 +159,14 @@ def chunk_document(text, source):
         "schedule": schedule,
     }
 
+    # Short context line prepended to each chunk's embedded text so the major
+    # is part of what the embedder sees — this disambiguates the otherwise
+    # near-identical "Rate my Schedule" threads (planning.md Challenge #2).
+    ctx = "Context: " + (meta.get("major") or "student")
+    if meta.get("semester"):
+        ctx += f", {meta['semester']}"
+    ctx += "."
+
     chunks = []
     counter = 0
 
@@ -167,16 +175,17 @@ def chunk_document(text, source):
         piece = piece.strip()
         if len(piece) >= MIN_CHUNK_LENGTH:
             chunks.append({
-                "text": piece,
+                "text": f"{ctx}\n{piece}",
                 "chunk_id": f"{source}_{counter}",
                 "section": section,
                 **doc_meta,
             })
             counter += 1
 
-    # the original post / question
-    for piece in _pack_block(post):
-        emit(piece, "post")
+    # NB: the original post is the OP asking "rate my schedule" — a question,
+    # not advice. Embedding it makes it match query-questions and crowd out the
+    # actual answers, so we do NOT embed posts. Only the comments (the advice)
+    # are retrievable; the post's situation lives in the schedule/major metadata.
 
     # one block per comment thread (blank-line separated)
     for block in re.split(r"\n\s*\n", comments):

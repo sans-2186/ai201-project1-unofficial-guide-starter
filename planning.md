@@ -45,7 +45,7 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 
 **Overlap:** ~50 characters 
 
-**Final chunk count:** 76 chunks across 10 documents (within the healthy 50–2,000 range). Only the posts and comments are embedded; each course schedule is kept as chunk metadata (with major/classification/semester) rather than embedded, since a timetable carries no opinion to retrieve.
+**Final chunk count:** 68 chunks across 10 documents (within the healthy 50–2,000 range). Only the comments (the advice) are embedded — the original posts are the OP asking for help, not advice, so embedding them made them match query-questions and crowd out the answers. Each course schedule + major/classification/semester is kept as chunk metadata (and a short "Context: <major>" line is prepended to each chunk's text) rather than embedded as a standalone chunk, since a timetable carries no opinion to retrieve.
 
 **Reasoning:** My documents are short Reddit threads — a student posts their major and class list, and other students comment back. Each comment is usually one self-contained opinion, so I'm keeping chunks small so that one chunk holds roughly one person's advice instead of mashing five people together. 600 characters also stays under the 256-token limit of my embedding model so nothing gets cut off. The small overlap just keeps advice from getting split in half at the edge of a chunk. Before chunking I clean out the Reddit junk (vote counts, "Reply", timestamps) so the embeddings focus on what students actually said.
 
@@ -76,13 +76,16 @@ If cost wasn't a problem and this was a real tool, I'd think about a bigger mode
      is right or wrong. "What are good dining halls?" is too vague.
      "What do students say about wait times at [dining hall name] during lunch?" is testable. -->
 
-| # | Question | Expected answer |
-|---|----------|-----------------|
-| 1 | What do students say about taking multiple 2000-level CS courses in the same semester? | Commenters generally warn it's a heavy load and advise spreading core CS courses out or pairing them with lighter electives. |
-| 2 | What advice did students give the transfer student who just came to UTD as a CS major? | Feedback on which transferred courses overlap, which professors to take, and that a first transfer semester shouldn't be overloaded while adjusting. |
-| 3 | What do students recommend for a pre-med biology major's schedule? | Advice to balance heavy science/lab courses with GPA in mind, and warnings about combining certain demanding science courses in one term. |
-| 4 | Is it manageable to take both 3000- and 4000-level IT courses together? | Students give a mixed but largely cautionary view, noting upper-level course workload and recommending checking professor difficulty before committing. |
-| 5 | What do students think about a neuroscience major taking an honors course load? | Honors adds workload; commenters weigh whether the schedule leaves enough time and suggest dropping or rebalancing if it looks too dense. |
+A mix of broad questions (test recall) and specific questions naming real
+professors/courses (test precision and are easy to grade right/wrong).
+
+| # | Type | Question | Expected answer |
+|---|------|----------|-----------------|
+| 1 | Broad | What do students say about taking multiple 2000-level CS courses in the same semester? | A heavy but doable load; advice to load up early but lessen the gaps and spread core courses out. |
+| 2 | Specific | Should I take Nhut Nguyen or Alice Wang for CS 2340 Computer Architecture? | Wang is recommended (structured class, an A is achievable with effort); Nguyen is poorly reviewed. Comp arch is hard regardless of professor. |
+| 3 | Specific | What course sequence do students recommend for a pre-med student (gen chem, bio, ochem, biochem)? | A gated sequence: gen chem 1 → 2, take bio 2 before bio 1, finish gen chem + bio 2 before A&P, then ochem unlocks biochem. |
+| 4 | Specific | What do students think of Professor Schulze for HIST 1301? | Mixed — several warn he has bad reviews and waited to avoid him; others (e.g. GoldyChoke, Comet7777) liked him. The Friday section can be a different professor. |
+| 5 | Broad (known gap) | Is it manageable to take both 3000- and 4000-level IT courses together? | A largely cautionary view on upper-level workload. Note: this thread is mostly professor reviews, so the corpus has limited direct "manageability" advice — an intentional coverage gap. |
 
 ---
 
