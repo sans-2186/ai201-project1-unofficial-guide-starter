@@ -10,7 +10,7 @@
 ## Domain
 
 <!-- What domain did you choose? Why is this knowledge valuable and hard to find through official channels? -->
-The domain I chose is "Rate my Schedule". I've seen many students, especially freshmen and sophomores, ask other students about professors and courses on reddit. Even though it's considered best to ask the academic advisior. However, most advisors are either busy or they vaguely give valid criticism about professors and compatibilty of courses taken in a particular semester. It is also hard to reach out to advisors after the courses are decided. 
+The domain I chose is "Rate my Schedule". I've seen many students, especially freshmen and sophomores, ask other students about professors and courses on Reddit. Even though it's considered best to ask the academic advisor, most advisors are either busy or only vaguely comment on professors and the compatibility of courses taken in a particular semester. It is also harder to reach out to advisors after the courses are decided. Hence, communicating with other students and taking advice on a schedule is what I want to automate — something that isn't done officially but is currently widely used.
 
 ---
 
@@ -45,9 +45,9 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 
 **Overlap:** ~50 characters 
 
-**Final chunk count:** 68 chunks across 10 documents (within the healthy 50–2,000 range). Only the comments (the advice) are embedded — the original posts are the OP asking for help, not advice, so embedding them made them match query-questions and crowd out the answers. Each course schedule + major/classification/semester is kept as chunk metadata (and a short "Context: <major>" line is prepended to each chunk's text) rather than embedded as a standalone chunk, since a timetable carries no opinion to retrieve.
+**Final chunk count:** 68 chunks across 10 documents (between the 50–2,000 range). Only the helpful, informative comments from the students are embedded. The original posts are the OP asking for help, like the app's user, so embedding them would only help with filtering the major and documents. Each course schedule, major, classification, and semester is kept as chunk metadata instead of embedding it as a standalone chunk, since a timetable carries no opinion to retrieve.
 
-**Reasoning:** My documents are short Reddit threads — a student posts their major and class list, and other students comment back. Each comment is usually one self-contained opinion, so I'm keeping chunks small so that one chunk holds roughly one person's advice instead of mashing five people together. 600 characters also stays under the 256-token limit of my embedding model so nothing gets cut off. The small overlap just keeps advice from getting split in half at the edge of a chunk. Before chunking I clean out the Reddit junk (vote counts, "Reply", timestamps) so the embeddings focus on what students actually said.
+**Reasoning:** My documents are short conversational Reddit threads. Each comment is usually one self-contained opinion, so I'm keeping chunks small so that one chunk holds roughly one person's advice instead of mashing five people together. 600 characters also stays under the 256-token limit of my embedding model so nothing gets cut off. The small overlap just keeps advice from getting split in half at the edge of a chunk. Before chunking I clean out the Reddit junk (vote counts, "Reply", timestamps, datestamps) so the embeddings focus on what students actually said.
 
 ---
 
@@ -63,9 +63,7 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 
 **Top-k:** 5
 
-**Production tradeoff reflection:** I picked all-MiniLM-L6-v2 because it's free, runs locally, and works well on short conversational text like Reddit comments. I went with top-5 since a schedule question usually has a few students agreeing or disagreeing, so I want a handful of opinions but not so many that off-topic stuff sneaks in.
-
-If cost wasn't a problem and this was a real tool, I'd think about a bigger model like OpenAI's `text-embedding-3-large`. It would tell similar course numbers apart better (CS 2305 vs CS 2336) and handle the slang students use. It also allows longer inputs, so I could embed a whole thread at once instead of tiny chunks. The downside is it's an API call, so it costs money and adds a little delay. For this project that's not worth it, so MiniLM is the right fit.
+**Production tradeoff reflection:** I picked all-MiniLM-L6-v2 because it's free, runs locally, and works well on short conversational text like Reddit comments. I went with top-5 since a schedule question usually has a few students agreeing or disagreeing, so I want a handful of opinions but not so many that off-topic stuff sneaks in. I think there are better paid models that would be easier to work with and are smarter when dealing with this kind of data.
 
 ---
 
@@ -76,8 +74,6 @@ If cost wasn't a problem and this was a real tool, I'd think about a bigger mode
      is right or wrong. "What are good dining halls?" is too vague.
      "What do students say about wait times at [dining hall name] during lunch?" is testable. -->
 
-A mix of broad questions (test recall) and specific questions naming real
-professors/courses (test precision and are easy to grade right/wrong).
 
 | # | Type | Question | Expected answer |
 |---|------|----------|-----------------|
@@ -85,7 +81,7 @@ professors/courses (test precision and are easy to grade right/wrong).
 | 2 | Specific | Should I take Nhut Nguyen or Alice Wang for CS 2340 Computer Architecture? | Wang is recommended (structured class, an A is achievable with effort); Nguyen is poorly reviewed. Comp arch is hard regardless of professor. |
 | 3 | Specific | What course sequence do students recommend for a pre-med student (gen chem, bio, ochem, biochem)? | A gated sequence: gen chem 1 → 2, take bio 2 before bio 1, finish gen chem + bio 2 before A&P, then ochem unlocks biochem. |
 | 4 | Specific | What do students think of Professor Schulze for HIST 1301? | Mixed — several warn he has bad reviews and waited to avoid him; others (e.g. GoldyChoke, Comet7777) liked him. The Friday section can be a different professor. |
-| 5 | Broad (known gap) | Is it manageable to take both 3000- and 4000-level IT courses together? | A largely cautionary view on upper-level workload. Note: this thread is mostly professor reviews, so the corpus has limited direct "manageability" advice — an intentional coverage gap. |
+| 5 | Broad | Is it manageable to take both 3000- and 4000-level IT courses together? | A largely cautionary view on upper-level workload. Note: this thread is mostly professor reviews, so the corpus has limited direct "manageability" advice — an intentional coverage gap. |
 
 ---
 
@@ -95,9 +91,9 @@ professors/courses (test precision and are easy to grade right/wrong).
      Consider: noisy or inconsistent documents, missing source attribution, off-topic
      retrieval, chunks that split key information across boundaries. -->
 
-1. **Students give opposite advice.** One person says a course combo is fine, another says it wrecked them, because their majors and workloads are different. If retrieval grabs both without the context of who said it, the system might make it sound like everyone agrees. I'll try to keep each post's major and year attached to its comments so that context isn't lost.
+1. Students often have varying opinions on the same schedule. This might cause confusion for the model. I have to make sure that the model communicates both sides when a relevant question is asked by the user. 
 
-2. **Threads look too similar to each other.** Every post is called "Rate my Schedule" and uses the same words (course numbers, "load," "professor"), so a biology question might accidentally pull chunks from a CS thread. Reddit also has jokes and off-topic replies that aren't real advice. I'll clean out the junk and keep major/course info in each chunk so the search has enough to tell threads apart.
+2. Some OP information is in the comments when communicating with other students, like taking online classes and starting to move early because they're a commuter. I have to make sure to include that as part of the user query and not the comments given as advice by other students.
 
 ---
 
@@ -115,8 +111,8 @@ professors/courses (test precision and are easy to grade right/wrong).
 
  read .txt    clean Reddit      all-MiniLM-L6-v2   embed question,   send chunks +
  files from   junk, split       embeds chunks,     pull top-5        question to Groq,
- documents/   into ~600-char    stored in          closest chunks    show answer +
- (Python)     chunks, 50        ChromaDB           from ChromaDB     sources in a
+ documents   into ~600-char    stored in          closest chunks    show answer +
+               chunks, 50        ChromaDB           from ChromaDB     sources in a
               overlap                                                 simple UI
 ```
 
@@ -135,7 +131,19 @@ professors/courses (test precision and are easy to grade right/wrong).
      with my specified chunk size and overlap" is a plan. -->
 
 **Milestone 3 — Ingestion and chunking:**
+- **Tool:** Claude (Claude Code) and the Google Gemini extension to access the Reddit links.
+- **Input:** the Chunking Strategy and Documents sections above, the pipeline diagram, and my 10 cleaned `.txt` files. I'll ask it to implement `load_documents()` and `chunk_document()` matching my 600-char / 50-overlap spec and attaching the source filename as metadata.
+- **Expect:** a `config.py` and an `ingest.py` that loads, lightly cleans, and chunks the documents into a list, plus information about the count and sample chunks.
+- **Verify:** run `python ingest.py`, read 5 sample chunks, confirm each is a self-contained comment (not a fragment/HTML/empty), and ensure the total is in the 50–2,000 range.
 
 **Milestone 4 — Embedding and retrieval:**
+- **Tool:** Claude.
+- **Input:** the Retrieval Approach section (all-MiniLM-L6-v2, top-5) and the diagram. I'll ask it to embed the chunks from `ingest.py` and store them in ChromaDB with metadata, and to write a `retrieve(query, k)` function returning the top-k chunks with distances and source info.
+- **Expect:** an `embed.py` with `build_store()` and `retrieve()`, using cosine distance so scores are interpretable.
+- **Verify:** run at least 3 evaluation-plan queries, print the returned chunks + distance scores, and confirm the top results are on-topic and from the right source (scores well below the 0.6–0.7 weak-match line).
 
 **Milestone 5 — Generation and interface:**
+- **Tool:** Claude.
+- **Input:** the Retrieval Approach section, the diagram, and my grounding requirement (answer from retrieved context only, with programmatic source attribution). I'll ask it to wire Groq's `llama-3.3-70b-versatile` onto `retrieve()` and build a Gradio UI.
+- **Expect:** a `query.py` with `ask(question)` returning `{answer, sources}` enforced by a strict grounding system prompt (refuse when context is insufficient), and an `app.py` Gradio interface.
+- **Verify:** test 2–3 in-domain queries (answers traceable to retrieved chunks, sources cited) and 1 out-of-domain query (must refuse, not fabricate). Confirm sources are appended programmatically, not invented by the model.
