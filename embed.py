@@ -102,7 +102,7 @@ def main():
             print(f"\n  [{i}] distance {r['distance']:.3f}  | "
                   f"source: {r['source']} | major: {r['major']}{flag}")
             text = r["text"].replace("\n", " ")
-            print(f"      {text[:400]}{'...' if len(text) > 400 else ''}")
+            print(f"      {text}")
 
 
 if __name__ == "__main__":

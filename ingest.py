@@ -153,6 +153,7 @@ def chunk_document(text, source):
 
     doc_meta = {
         "source": source,
+        "url": meta.get("url", ""),
         "major": meta.get("major", ""),
         "classification": meta.get("classification", ""),
         "semester": meta.get("semester", ""),

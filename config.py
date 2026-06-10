@@ -17,3 +17,7 @@ EMBED_MODEL = "all-MiniLM-L6-v2"   # local sentence-transformers model, no API k
 CHROMA_PATH = os.path.join(BASE_DIR, "chroma_db")   # persisted store (gitignored)
 COLLECTION_NAME = "unofficial_guide"
 TOP_K = 5               # chunks returned per query
+
+# Generation (Milestone 5).
+GEN_MODEL = "llama-3.3-70b-versatile"   # Groq, free-tier
+GEN_TEMPERATURE = 0.0                   # low = stays grounded in the context
