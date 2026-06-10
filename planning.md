@@ -45,6 +45,8 @@ The domain I chose is "Rate my Schedule". I've seen many students, especially fr
 
 **Overlap:** ~50 characters 
 
+**Final chunk count:** 96 chunks across 10 documents (within the healthy 50–2,000 range).
+
 **Reasoning:** My documents are short Reddit threads — a student posts their major and class list, and other students comment back. Each comment is usually one self-contained opinion, so I'm keeping chunks small so that one chunk holds roughly one person's advice instead of mashing five people together. 600 characters also stays under the 256-token limit of my embedding model so nothing gets cut off. The small overlap just keeps advice from getting split in half at the edge of a chunk. Before chunking I clean out the Reddit junk (vote counts, "Reply", timestamps) so the embeddings focus on what students actually said.
 
 ---
