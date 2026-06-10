@@ -37,14 +37,32 @@ def load_documents():
     return documents
 
 
-def _window(text):
-    """Character sliding window with overlap, for a block longer than CHUNK_SIZE.
+HEADER_KEYS = ("SOURCE", "URL", "MAJOR", "CLASSIFICATION", "SEMESTER")
 
-    Breaks on the nearest whitespace before the size limit so pieces don't start
-    or end mid-word.
-    """
-    pieces = []
-    start = 0
+
+def parse_document(text):
+    """Pull the header fields and the SCHEDULE / POST / COMMENTS sections apart."""
+    meta = {}
+    for key in HEADER_KEYS:
+        m = re.search(rf"^{key}:\s*(.+)$", text, flags=re.MULTILINE)
+        meta[key.lower()] = m.group(1).strip() if m else ""
+
+    def section(name, nexts):
+        stop = "|".join(nexts)
+        pattern = (rf"^{name}:\s*\n(.*?)(?=^(?:{stop}):|\Z)" if stop
+                   else rf"^{name}:\s*\n(.*)\Z")
+        m = re.search(pattern, text, flags=re.MULTILINE | re.DOTALL)
+        return m.group(1).strip() if m else ""
+
+    schedule = section("SCHEDULE", ("POST", "COMMENTS"))
+    post = section("POST", ("COMMENTS",))
+    comments = section("COMMENTS", ())
+    return meta, schedule, post, comments
+
+
+def _window(text):
+    """Word-boundary sliding window — fallback for a single sentence > CHUNK_SIZE."""
+    pieces, start = [], 0
     while start < len(text):
         end = start + CHUNK_SIZE
         if end < len(text):
@@ -56,8 +74,6 @@ def _window(text):
             pieces.append(piece)
         if end >= len(text):
             break
-        # Step back by `overlap`, then snap forward to the next space so the
-        # next piece also starts on a word boundary (keeps most of the overlap).
         new_start = max(end - CHUNK_OVERLAP, start + 1)
         space = text.find(" ", new_start)
         if space != -1 and space < end:
@@ -66,47 +82,106 @@ def _window(text):
     return pieces
 
 
+def _sentence_split(text):
+    """Split an over-long line into <=CHUNK_SIZE pieces at sentence boundaries."""
+    sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+    pieces, cur = [], ""
+    for s in sentences:
+        if len(s) > CHUNK_SIZE:           # a single monster sentence
+            if cur:
+                pieces.append(cur)
+                cur = ""
+            pieces.extend(_window(s))
+        elif not cur:
+            cur = s
+        elif len(cur) + 1 + len(s) <= CHUNK_SIZE:
+            cur += " " + s
+        else:
+            pieces.append(cur)
+            cur = s
+    if cur:
+        pieces.append(cur)
+    return pieces
+
+
+def _pack_block(block):
+    """Pack a block's lines into <=CHUNK_SIZE pieces, keeping whole lines together.
+
+    A comment and its indented replies are separate lines in the same block, so
+    they stay in one piece until the size limit; only a single over-long line
+    (a very long comment) is split further, at sentence boundaries.
+    """
+    pieces, cur = [], ""
+    for line in block.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        units = [line] if len(line) <= CHUNK_SIZE else _sentence_split(line)
+        for u in units:
+            if not cur:
+                cur = u
+            elif len(cur) + 1 + len(u) <= CHUNK_SIZE:
+                cur += "\n" + u
+            else:
+                pieces.append(cur)
+                cur = u
+    if cur:
+        pieces.append(cur)
+    return pieces
+
+
 def chunk_document(text, source):
     """
     Split a source document into chunks ready for embedding.
 
-    Strategy: boundary-aware, then sliding window only where needed.
-      - First split the document on blank lines, so each block is a natural
-        unit: the header, the schedule, the post, and one block per comment
-        (a comment plus its nested replies stays together). This keeps a chunk
-        to roughly one person's advice instead of cutting mid-sentence.
-      - chunk_size = 600 characters (~150 tokens): only blocks longer than this
-        (a few very long comments) get split further with a sliding window.
-      - overlap = 50 characters: duplicates a small window at each boundary so
-        advice split across two pieces can still be retrieved intact.
-      - min_length = 50 characters: filters whitespace artifacts and very short
-        fragments that add noise without useful meaning.
+    Strategy: boundary-aware, opinions only.
+      - Only the post (the question) and the comments (the advice) are embedded.
+        The schedule is a timetable, not an opinion, so it is NOT a searchable
+        chunk; it is kept on each chunk's metadata for grounding instead. The
+        major/classification/semester ride along as metadata too.
+      - Each top-level comment plus its nested replies = one block; it stays
+        whole unless it exceeds CHUNK_SIZE.
+      - chunk_size = 600 characters (~150 tokens, see planning.md). Only a block
+        longer than this is split, and then at sentence boundaries so pieces are
+        whole sentences rather than cut mid-thought.
+      - min_length = 50 characters: drops fragments and bare labels.
 
-    Returns a list of dicts, each with:
-      - "text"     : the chunk text (str)
-      - "source"   : the source filename stem, e.g. "01_science_lastminute"
-      - "chunk_id" : a unique id, e.g. "01_science_lastminute_0"
+    Returns a list of dicts, each with "text", "chunk_id", "section", and the
+    document metadata (source, major, classification, semester, schedule).
     """
+    meta, schedule, post, comments = parse_document(text)
+
+    doc_meta = {
+        "source": source,
+        "major": meta.get("major", ""),
+        "classification": meta.get("classification", ""),
+        "semester": meta.get("semester", ""),
+        "schedule": schedule,
+    }
+
     chunks = []
     counter = 0
 
-    # one block per blank-line-separated section / comment thread
-    for block in re.split(r"\n\s*\n", text):
-        block = block.strip()
-        if not block:
-            continue
+    def emit(piece, section):
+        nonlocal counter
+        piece = piece.strip()
+        if len(piece) >= MIN_CHUNK_LENGTH:
+            chunks.append({
+                "text": piece,
+                "chunk_id": f"{source}_{counter}",
+                "section": section,
+                **doc_meta,
+            })
+            counter += 1
 
-        # keep short blocks whole; only window the long ones
-        pieces = [block] if len(block) <= CHUNK_SIZE else _window(block)
+    # the original post / question
+    for piece in _pack_block(post):
+        emit(piece, "post")
 
-        for piece in pieces:
-            if len(piece) >= MIN_CHUNK_LENGTH:
-                chunks.append({
-                    "text": piece,
-                    "source": source,
-                    "chunk_id": f"{source}_{counter}",
-                })
-                counter += 1
+    # one block per comment thread (blank-line separated)
+    for block in re.split(r"\n\s*\n", comments):
+        for piece in _pack_block(block.strip()):
+            emit(piece, "comment")
 
     return chunks
 
